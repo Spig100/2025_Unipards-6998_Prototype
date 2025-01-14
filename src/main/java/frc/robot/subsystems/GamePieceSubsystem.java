@@ -4,20 +4,19 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.GamePieceConstants.*;
 
-import static frc.robot.Constants.ElevatorConstants.*;
+import static frc.robot.Constants.GamePieceConstants.*;
 
-public class ElevatorSubsystem extends SubsystemBase {
-  private final SparkMax motor1 = new SparkMax(ELEVATOR_MOTOR_1, MotorType.kBrushless);
-  private final SparkMax motor2 = new SparkMax(ELEVATOR_MOTOR_2, MotorType.kBrushless);
+public class GamePieceSubsystem extends SubsystemBase {
+  private final SparkMax motor1 = new SparkMax(GAME_PIECE_MOTOR_1, MotorType.kBrushless);
+  private final SparkMax motor2 = new SparkMax(GAME_PIECE_MOTOR_2, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
-  public ElevatorSubsystem() {}
+  public GamePieceSubsystem() {}
   /**
    * Example command factory method.
    *

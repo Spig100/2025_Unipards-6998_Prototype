@@ -13,8 +13,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  //TODO: Check the CAN Bus ID for each subsystem's motor controllers and fill in the values.
+
   public static final class ElevatorConstants {
-    public static final int MOTOR1 = 0;
-    public static final int MOTOR2 = 1;
+    public static final int ELEVATOR_MOTOR_1 = 0;
+    public static final int ELEVATOR_MOTOR_2 = 0;
+  }
+
+  public static final class GamePieceConstants {
+    public static final int GAME_PIECE_MOTOR_1 = 0;
+    public static final int GAME_PIECE_MOTOR_2 = 0;
   }
 }
