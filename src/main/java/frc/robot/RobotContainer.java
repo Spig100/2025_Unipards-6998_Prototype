@@ -1,6 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+/*
+ Copyright (c) FIRST and other WPILib contributors.
+ Open Source Software; you can modify and/or share it under the terms of
+ the WPILib BSD license file in the root directory of this project.
+*/
 
 package frc.robot;
 
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import frc.robot.commands.ElevatorCtrlCmd;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -37,8 +40,6 @@ public class RobotContainer {
 
     private final CommandXboxController driverXboxCtrl = new CommandXboxController(0);
     private final CommandXboxController operatorXboxCtrl = new CommandXboxController(1);
-    private final CommandXboxController testDriverXboxCtrl = new CommandXboxController(2);
-    private final CommandXboxController testOperatorXboxCtrl = new CommandXboxController(3);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -49,6 +50,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // DRIVETRAIN BINDING
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -68,7 +71,7 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-driverXboxCtrl.getLeftY(), -driverXboxCtrl.getLeftX()))
         ));
 
-        // Run SysId routines when holding back/start and X/Y.
+        // Run SysId routines on the drivetrain when holding back/start and X/Y of the driver controller.
         // Note that each routine should be run exactly once in a single log.
         driverXboxCtrl.back().and(driverXboxCtrl.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         driverXboxCtrl.back().and(driverXboxCtrl.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -80,10 +83,16 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
+        // ELEVATOR BINDING
+        operatorXboxCtrl.povUp().onTrue(new ElevatorCtrlCmd(elevator,1));
+        operatorXboxCtrl.povDown().onTrue(new ElevatorCtrlCmd(elevator,-1));
+        operatorXboxCtrl.povCenter().onTrue(new ElevatorCtrlCmd(elevator,0));
+
+        // Run SysId routines on the elevator when holding back/start and X/Y of the operator controller.
         operatorXboxCtrl.back().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdDynamic(Direction.kForward)));
         operatorXboxCtrl.back().and(operatorXboxCtrl.x().whileTrue(elevator.sysIdDynamic(Direction.kReverse)));
-        operatorXboxCtrl.start().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdDynamic(Direction.kForward)));
-        operatorXboxCtrl.start().and(operatorXboxCtrl.x().whileTrue(elevator.sysIdDynamic(Direction.kReverse)));
+        operatorXboxCtrl.start().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdQuasistatic(Direction.kForward)));
+        operatorXboxCtrl.start().and(operatorXboxCtrl.x().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse)));
 
     }
 

@@ -35,11 +35,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public ElevatorSubsystem() {
-
-    // Setting the zero point when booting the robot.
-    motor_right_leader.getEncoder().setPosition(0);
-    motor_left_follower.getEncoder().setPosition(0);
-
     /* Motor configuration modifying. */
     motor_conf_glob
             .smartCurrentLimit(50)
@@ -49,8 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
     motor_conf_left_follower
             .apply(motor_conf_glob)
-            .inverted(true)
-            .follow(motor_right_leader)
+            .follow(motor_right_leader, true)
             .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
 
     /* Motor configuration applying */
@@ -65,6 +59,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             SparkBase.PersistMode.kPersistParameters
     );
 
+  }
+
+  public void zeroEncoders() {
+    // Setting the zero point when booting the robot.
+    motor_right_leader.getEncoder().setPosition(0);
+    motor_left_follower.getEncoder().setPosition(0);
   }
 
   public void setElevatorSpeed(double speed) {
