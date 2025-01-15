@@ -37,7 +37,8 @@ public class RobotContainer {
 
     private final CommandXboxController driverXboxCtrl = new CommandXboxController(0);
     private final CommandXboxController operatorXboxCtrl = new CommandXboxController(1);
-    private final CommandXboxController testXboxCtrl = new CommandXboxController(2);
+    private final CommandXboxController testDriverXboxCtrl = new CommandXboxController(2);
+    private final CommandXboxController testOperatorXboxCtrl = new CommandXboxController(3);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -79,10 +80,10 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        testXboxCtrl.a().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        testXboxCtrl.b().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        testXboxCtrl.x().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        testXboxCtrl.y().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        operatorXboxCtrl.back().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdDynamic(Direction.kForward)));
+        operatorXboxCtrl.back().and(operatorXboxCtrl.x().whileTrue(elevator.sysIdDynamic(Direction.kReverse)));
+        operatorXboxCtrl.start().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdDynamic(Direction.kForward)));
+        operatorXboxCtrl.start().and(operatorXboxCtrl.x().whileTrue(elevator.sysIdDynamic(Direction.kReverse)));
 
     }
 
