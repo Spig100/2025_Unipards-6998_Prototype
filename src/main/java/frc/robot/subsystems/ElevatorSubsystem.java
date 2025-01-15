@@ -4,20 +4,100 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstants;
 
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ElevatorConstants.*;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private final SparkMax motor1 = new SparkMax(ELEVATOR_MOTOR_1, MotorType.kBrushless);
-  private final SparkMax motor2 = new SparkMax(ELEVATOR_MOTOR_2, MotorType.kBrushless);
+
+  private final SparkMax motor_right_leader = new SparkMax(ELEVATOR_MOTOR_1, MotorType.kBrushless);
+  private final SparkMax motor_left_follower = new SparkMax(ELEVATOR_MOTOR_2, MotorType.kBrushless);
+
+  private SparkMaxConfig motor_conf_glob;
+  private SparkMaxConfig motor_conf_right_leader;
+  private SparkMaxConfig motor_conf_left_follower;
+
+  private SparkClosedLoopController motor1_ctrl;
+  private SparkClosedLoopController motor2_ctrl;
+
   /** Creates a new ExampleSubsystem. */
-  public ElevatorSubsystem() {}
+  public ElevatorSubsystem() {
+
+    // Setting the zero point when booting the robot.
+    motor_right_leader.getEncoder().setPosition(0);
+    motor_left_follower.getEncoder().setPosition(0);
+
+    /* Motor configuration modifying. */
+    motor_conf_glob
+            .smartCurrentLimit(50)
+            .idleMode(SparkBaseConfig.IdleMode.kBrake);
+    motor_conf_right_leader
+            .apply(motor_conf_glob)
+            .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
+    motor_conf_left_follower
+            .apply(motor_conf_glob)
+            .inverted(true)
+            .follow(motor_right_leader)
+            .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
+
+    /* Motor configuration applying */
+    motor_right_leader.configure(
+            motor_conf_right_leader,
+            SparkBase.ResetMode.kResetSafeParameters,
+            SparkBase.PersistMode.kPersistParameters
+    );
+    motor_left_follower.configure(
+            motor_conf_left_follower,
+            SparkBase.ResetMode.kResetSafeParameters,
+            SparkBase.PersistMode.kPersistParameters
+    );
+
+  }
+
+  public void setElevatorSpeed(double speed) {
+    motor_right_leader.set(speed);
+  }
+
+  public void setElevatorVoltage(Voltage voltage) {
+    motor_left_follower.setVoltage(voltage);
+  }
+
+  // System Identification Tool
+  // Initialize System Identification Routine
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+          new SysIdRoutine.Config(
+                  null,
+                  Volts.of(5),
+                  null
+          ),
+          new SysIdRoutine.Mechanism(
+                  this::setElevatorVoltage,
+                  null,
+                  this
+          )
+  );
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.dynamic(direction);
+  }
+
   /**
    * Example command factory method.
    *
