@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
     private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -34,9 +35,13 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driverXboxCtrl = new CommandXboxController(0);
+    private final CommandXboxController operatorXboxCtrl = new CommandXboxController(1);
+    private final CommandXboxController testXboxCtrl = new CommandXboxController(2);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
 
     public RobotContainer() {
         configureBindings();
@@ -48,31 +53,37 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
+                drive.withVelocityX(-driverXboxCtrl.getLeftY() * MaxSpeed)
                         // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+                    .withVelocityY(-driverXboxCtrl.getLeftX() * MaxSpeed)
                         // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
+                    .withRotationalRate(-driverXboxCtrl.getRightX() * MaxAngularRate)
                     // Drive counterclockwise with negative X (left)
             )
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        driverXboxCtrl.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverXboxCtrl.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-driverXboxCtrl.getLeftY(), -driverXboxCtrl.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driverXboxCtrl.back().and(driverXboxCtrl.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverXboxCtrl.back().and(driverXboxCtrl.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverXboxCtrl.start().and(driverXboxCtrl.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverXboxCtrl.start().and(driverXboxCtrl.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        driverXboxCtrl.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        testXboxCtrl.a().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        testXboxCtrl.b().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        testXboxCtrl.x().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        testXboxCtrl.y().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
     }
 
     public Command getAutonomousCommand() {
