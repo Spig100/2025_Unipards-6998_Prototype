@@ -16,7 +16,6 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     // Motors' CAN Bus ID
-    // TODO: Check every motor controller's CAN Bus ID and real status; and then fill them in.
     public static final int ELEVATOR_MOTOR_1 = 1;
     public static final int ELEVATOR_MOTOR_2 = 2;
 
