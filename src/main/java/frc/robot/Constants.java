@@ -17,8 +17,8 @@ public final class Constants {
   public static final class ElevatorConstants {
     // Motors' CAN Bus ID
     // TODO: Check every motor controller's CAN Bus ID and real status; and then fill them in.
-    public static final int ELEVATOR_MOTOR_1 = 0;
-    public static final int ELEVATOR_MOTOR_2 = 0;
+    public static final int ELEVATOR_MOTOR_1 = 1;
+    public static final int ELEVATOR_MOTOR_2 = 2;
 
     public static final boolean ELEVATOR_MOTOR_1_INVERTED = true;
     public static final boolean ELEVATOR_MOTOR_2_INVERTED = false;
@@ -27,8 +27,7 @@ public final class Constants {
     // TODO: Check Elevator's specification and fill in.
     public static final int ELEVATOR_TRIP_DISTANCE = 0;
     public static final double ELEVATOR_GEAR_RATIO = 9; // X:1
-    public static final double ELEVATOR_MAX_VELOCITY = 0;// meter per second
-    public static final double ELEVATOR_SPEED = 0.1; // percentage, only use in non-PID mode
+    public static final double ELEVATOR_SPEED = 0.25; // percentage, only use in non-PID mode
     public static final double ELEVATOR_ROTATION_PER_METER = 0.12 * ELEVATOR_GEAR_RATIO;
     public static final double ELEVATOR_FORWARD_SOFT_LIMIT
             = ELEVATOR_TRIP_DISTANCE * ELEVATOR_ROTATION_PER_METER;

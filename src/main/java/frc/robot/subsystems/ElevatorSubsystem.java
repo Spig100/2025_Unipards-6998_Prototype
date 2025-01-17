@@ -26,15 +26,34 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final SparkMax motor_right_leader = new SparkMax(ELEVATOR_MOTOR_1, MotorType.kBrushless);
   private final SparkMax motor_left_follower = new SparkMax(ELEVATOR_MOTOR_2, MotorType.kBrushless);
 
-  private SparkMaxConfig motor_conf_glob;
-  private SparkMaxConfig motor_conf_right_leader;
-  private SparkMaxConfig motor_conf_left_follower;
+  private final SparkMaxConfig motor_conf_glob = new SparkMaxConfig();
+  private final SparkMaxConfig motor_conf_right_leader = new SparkMaxConfig();
+  private final SparkMaxConfig motor_conf_left_follower = new SparkMaxConfig();
 
   private SparkClosedLoopController motor1_ctrl;
   private SparkClosedLoopController motor2_ctrl;
 
   /** Creates a new ExampleSubsystem. */
   public ElevatorSubsystem() {
+    configureMotors();
+
+  }
+
+  public void zeroEncoders() {
+    // Setting the zero point when booting the robot.
+    motor_right_leader.getEncoder().setPosition(0);
+    motor_left_follower.getEncoder().setPosition(0);
+  }
+
+  public void setElevatorSpeed(double speed) {
+    motor_right_leader.set(speed);
+  }
+
+  public void setElevatorVoltage(Voltage voltage) {
+    motor_left_follower.setVoltage(voltage);
+  }
+
+  public void configureMotors() {
     /* Motor configuration modifying. */
     motor_conf_glob
             .smartCurrentLimit(50)
@@ -58,21 +77,6 @@ public class ElevatorSubsystem extends SubsystemBase {
             SparkBase.ResetMode.kResetSafeParameters,
             SparkBase.PersistMode.kPersistParameters
     );
-
-  }
-
-  public void zeroEncoders() {
-    // Setting the zero point when booting the robot.
-    motor_right_leader.getEncoder().setPosition(0);
-    motor_left_follower.getEncoder().setPosition(0);
-  }
-
-  public void setElevatorSpeed(double speed) {
-    motor_right_leader.set(speed);
-  }
-
-  public void setElevatorVoltage(Voltage voltage) {
-    motor_left_follower.setVoltage(voltage);
   }
 
   // System Identification Tool
