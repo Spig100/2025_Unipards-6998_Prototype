@@ -8,10 +8,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import java.util.function.BooleanSupplier;
-
 /** An example command that uses an example subsystem. */
-public class ElevatorCtrlCmd extends Command {
+public class ElevatorNonPIDCtrlCmd extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ElevatorSubsystem elevator;
   private final int status;
@@ -21,7 +19,7 @@ public class ElevatorCtrlCmd extends Command {
    *
    * @param elevator The subsystem used by this command.
    */
-  public ElevatorCtrlCmd(ElevatorSubsystem elevator, int status) {
+  public ElevatorNonPIDCtrlCmd(ElevatorSubsystem elevator, int status) {
     this.elevator = elevator;
     this.status = status;
     // Use addRequirements() here to declare subsystem dependencies.

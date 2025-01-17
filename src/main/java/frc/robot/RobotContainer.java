@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
-import frc.robot.commands.ElevatorCtrlCmd;
+import frc.robot.commands.ElevatorNonPIDCtrlCmd;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -84,9 +84,9 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // ELEVATOR BINDING
-        operatorXboxCtrl.povUp().onTrue(new ElevatorCtrlCmd(elevator,1));
-        operatorXboxCtrl.povDown().onTrue(new ElevatorCtrlCmd(elevator,-1));
-        operatorXboxCtrl.povCenter().onTrue(new ElevatorCtrlCmd(elevator,0));
+        operatorXboxCtrl.povUp().onTrue(new ElevatorNonPIDCtrlCmd(elevator,1));
+        operatorXboxCtrl.povDown().onTrue(new ElevatorNonPIDCtrlCmd(elevator,-1));
+        operatorXboxCtrl.povCenter().onTrue(new ElevatorNonPIDCtrlCmd(elevator,0));
 
         // Run SysId routines on the elevator when holding back/start and X/Y of the operator controller.
         operatorXboxCtrl.back().and(operatorXboxCtrl.y().whileTrue(elevator.sysIdDynamic(Direction.kForward)));
