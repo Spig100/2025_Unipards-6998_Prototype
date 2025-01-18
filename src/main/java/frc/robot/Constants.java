@@ -27,15 +27,12 @@ public final class Constants {
     public static final int ELEVATOR_TRIP_DISTANCE = 0;
     public static final double ELEVATOR_GEAR_RATIO = 9; // X:1
     public static final double ELEVATOR_SPEED = 0.25; // percentage, only use in non-PID mode
-    public static final double ELEVATOR_ROTATION_PER_METER = 0.12 * ELEVATOR_GEAR_RATIO;
-    public static final double ELEVATOR_FORWARD_SOFT_LIMIT
-            = ELEVATOR_TRIP_DISTANCE * ELEVATOR_ROTATION_PER_METER;
-    public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+    // public static final double ELEVATOR_ROTATION_PER_METER = 0.12 * ELEVATOR_GEAR_RATIO;
+    public static final int ELEVATOR_SMART_CURRENT_LIMIT = 25; // Amp
   }
 
   public static final class GamePieceConstants {
-    public static final int GAME_PIECE_MOTOR_1 = 0;
-    public static final int GAME_PIECE_MOTOR_2 = 0;
-    public static final double GAME_PIECE_SPEED_LIMIT = 0;
+    public static final int GAME_PIECE_MOTOR = 0;
+    public static final int GAME_PIECE_SMART_CURRENT_LIMIT = 25;
   }
 }

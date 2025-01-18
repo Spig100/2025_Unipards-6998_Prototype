@@ -6,31 +6,45 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.GamePieceConstants.*;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import static frc.robot.Constants.GamePieceConstants.*;
 
 public class GamePieceSubsystem extends SubsystemBase {
-  private final SparkMax motor1 = new SparkMax(GAME_PIECE_MOTOR_1, MotorType.kBrushless);
-  private final SparkMax motor2 = new SparkMax(GAME_PIECE_MOTOR_2, MotorType.kBrushless);
-  /** Creates a new ExampleSubsystem. */
+  private final SparkMax motor = new SparkMax(GAME_PIECE_MOTOR, MotorType.kBrushless);
+  private final SparkMaxConfig motor_config = new SparkMaxConfig();
+
+  /** Creates a new GamePieceSubsystem. */
   public GamePieceSubsystem() {}
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+
+  private void configureMotors() {
+    motor_config
+            .smartCurrentLimit(GAME_PIECE_SMART_CURRENT_LIMIT)
+            .idleMode(SparkBaseConfig.IdleMode.kCoast);
+    motor.configure(motor_config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+  }
+
+  // Basic methods.
+
+  public void setMotorPercentage(double output) {
+    motor.set(output);
+  }
+
+  public void setMotorVoltage(double voltage) {
+    motor.setVoltage(voltage);
+  }
+
+  // System Identification
+
+  public SysIdRoutine sysIdRoutine() = new SysIdRoutine(
+
+  );
   }
 
   /**
