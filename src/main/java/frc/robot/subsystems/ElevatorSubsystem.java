@@ -56,15 +56,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void configureMotors() {
     /* Motor configuration modifying. */
     motor_conf_glob
-            .smartCurrentLimit(50)
+            .smartCurrentLimit(ELEVATOR_SMART_CURRENT_LIMIT)
             .idleMode(SparkBaseConfig.IdleMode.kBrake);
     motor_conf_right_leader
-            .apply(motor_conf_glob)
-            .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
+            .apply(motor_conf_glob);
     motor_conf_left_follower
             .apply(motor_conf_glob)
-            .follow(motor_right_leader, true)
-            .softLimit.forwardSoftLimit(ELEVATOR_FORWARD_SOFT_LIMIT).reverseSoftLimit(ELEVATOR_REVERSE_SOFT_LIMIT);
+            .follow(motor_right_leader, true);
 
     /* Motor configuration applying */
     motor_right_leader.configure(
@@ -102,21 +100,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     return sysIdRoutine.dynamic(direction);
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
 
-  /**
+    /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
